@@ -1,9 +1,9 @@
 from kivy.app import App
-from kivy.uix.label import Label
+from kivy.uix.button import Button
 
-class FinanceApp(App):
+class TestApp(App):
     def build(self):
-        return Label(text="Приложение для учета финансов")
+        return Button(text="Hello World", font_size=50)
 
 if __name__ == "__main__":
-    FinanceApp().run()
+    TestApp().run()
