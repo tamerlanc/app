@@ -15,7 +15,7 @@ script:
 
 deploy:
   provider: releases
-  api_key: $GITHUB_TOKEN
+  api_key: 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
   file: bin/*.apk
   skip_cleanup: true
   on:
