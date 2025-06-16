@@ -36,7 +36,18 @@ jobs:
           mv ~/android-sdk/cmdline-tools/cmdline-tools ~/android-sdk/cmdline-tools/latest
           rm commandlinetools-linux-9477386_latest.zip
           
-          yes | ~/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=~/android-sdk "platform-tools" "platforms;android-33" "build-tools;33.0.2" "ndk;25.2.9519653"
+          # Accept licenses
+          mkdir -p ~/android-sdk/licenses
+          echo -e "\n24333f8a63b6825ea9c5514f83c2829b004d1fee" > ~/android-sdk/licenses/android-sdk-license
+          echo -e "\n84831b9409646a918e30573bab4c9c91346d8abd" > ~/android-sdk/licenses/android-sdk-preview-license
+          echo -e "\nd56f5187479451eabf01fb78af6dfcb131a6481e" > ~/android-sdk/licenses/android-sdk-arm-dbt-license
+          echo -e "\n601085b94cd77f0b54ff86406957099ebe79c4d6" > ~/android-sdk/licenses/intel-android-extra-license
+          
+          # Install components
+          ~/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=~/android-sdk "platform-tools" "platforms;android-33" "build-tools;33.0.2" "ndk;25.2.9519653"
+          
+          # List installed components
+          ~/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=~/android-sdk --list
           
           echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
           echo "ANDROID_NDK_HOME=$HOME/android-sdk/ndk/25.2.9519653" >> $GITHUB_ENV
@@ -49,11 +60,10 @@ jobs:
               buildozer \
               cython==0.29.36 \
               kivy==2.3.0 \
-              "python-for-android==2024.1.21"  # Последняя стабильная версия
+              "python-for-android==2024.1.21"
 
       - name: Configure Buildozer
         run: |
-          # Create minimal buildozer.spec if missing
           if [ ! -f buildozer.spec ]; then
             echo "[app]" > buildozer.spec
             echo "title = FinanceApp" >> buildozer.spec
