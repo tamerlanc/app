@@ -1,8 +1,8 @@
-﻿name: Build APK with Docker
+﻿name: Build APK (v4.0)
 on:
   push:
     tags:
-      - "v*"
+      - "v4.*"
 
 jobs:
   build:
@@ -19,8 +19,8 @@ jobs:
           buildozer android clean
           buildozer android debug
 
-      - name: Upload APK artifact
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: app-debug
+          name: app-v4.0-debug
           path: bin/*.apk

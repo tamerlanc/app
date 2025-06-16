@@ -1,10 +1,12 @@
 [app]
-title = FinanceApp
-package.name = financeapp
+title = FinanceApp v4.0
+package.name = financeapp4
 package.domain = org.example
 source.dir = .
-version = 0.1
-requirements = python3,kivy
+version = 4.0.0  # Обновленная версия
+requirements = python3, kivy==2.3.0
 
 [android]
-archs = armeabi-v7a
+archs = armeabi-v7a, arm64-v8a  # Поддержка двух архитектур
+minapi = 21
+targetapi = 33
