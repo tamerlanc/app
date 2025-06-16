@@ -49,7 +49,7 @@ jobs:
               buildozer \
               cython==0.29.36 \
               kivy==2.3.0 \
-              python-for-android==2023.8.25
+              "python-for-android==2024.1.21"  # Последняя стабильная версия
 
       - name: Configure Buildozer
         run: |
