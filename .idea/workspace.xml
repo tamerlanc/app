@@ -7,7 +7,6 @@
     <list default="true" id="e3a2184e-620c-46cf-ba89-907b3983d8d6" name="Changes" comment="apk">
       <change beforePath="$PROJECT_DIR$/.github/workflows/build.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/build.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/buildozer.spec" beforeDir="false" afterPath="$PROJECT_DIR$/buildozer.spec" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,7 +70,7 @@
       <workItem from="1750061248874" duration="1034000" />
       <workItem from="1750062365454" duration="170000" />
       <workItem from="1750062554423" duration="2647000" />
-      <workItem from="1750065238005" duration="2676000" />
+      <workItem from="1750065238005" duration="3403000" />
     </task>
     <task id="LOCAL-00001" summary="test">
       <option name="closed" value="true" />
