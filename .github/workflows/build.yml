@@ -6,49 +6,56 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04  # Используем стабильную версию
+    runs-on: ubuntu-22.04
     timeout-minutes: 30
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3  # Стабильная версия checkout
+        uses: actions/checkout@v4
 
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v4  # Стабильная версия setup-python
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
         with:
-          python-version: "3.8"
+          python-version: "3.10"
 
       - name: Install system dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-              git unzip openjdk-8-jdk \
+              git unzip openjdk-11-jdk \
               python3-pip python3-dev \
               libffi-dev libssl-dev zlib1g-dev \
-              build-essential
+              build-essential autoconf libtool pkg-config \
+              zlib1g-dev libncurses5-dev libncursesw5-dev \
+              libtinfo5 cmake libffi-dev libssl-dev
 
       - name: Install Buildozer and dependencies
         run: |
           python -m pip install --upgrade pip setuptools wheel
-          pip install buildozer==1.4.0 cython==0.29.21 kivy==2.0.0
+          pip install buildozer cython==0.29.36 kivy==2.3.0
 
-      - name: Prepare environment
+      - name: Initialize Buildozer
         run: |
-          mkdir -p ~/.buildozer/android/platform
-          echo "[buildozer]" > ~/.buildozerrc
-          echo "log_level = 2" >> ~/.buildozerrc
+          buildozer init  # Создаст spec файл если его нет
+          echo "[app]" > buildozer.spec
+          echo "title = FinanceApp" >> buildozer.spec
+          echo "package.name = financeapp" >> buildozer.spec
+          echo "package.domain = org.example" >> buildozer.spec
+          echo "source.dir = ." >> buildozer.spec
+          echo "version = 1.0" >> buildozer.spec
+          echo "requirements = python3,kivy==2.3.0" >> buildozer.spec
+          echo "" >> buildozer.spec
+          echo "[android]" >> buildozer.spec
+          echo "arch = armeabi-v7a" >> buildozer.spec
+          echo "p4a.branch = master" >> buildozer.spec
 
       - name: Build APK
         run: |
-          buildozer init  # Создаст spec файл если его нет
-          sed -i 's/^requirements = .*/requirements = python3,kivy/' buildozer.spec
-          sed -i 's/^android.arch = .*/android.arch = armeabi-v7a/' buildozer.spec
-          
           buildozer -v android clean
           buildozer -v android debug
 
       - name: Upload APK
-        uses: actions/upload-artifact@v3  # Стабильная версия upload-artifact
+        uses: actions/upload-artifact@v3
         with:
           name: app
           path: bin/*.apk
