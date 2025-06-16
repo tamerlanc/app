@@ -44,13 +44,22 @@ jobs:
               cython==0.29.36 \
               kivy==2.3.0
 
-      - name: Initialize Buildozer
+      - name: Configure Buildozer
         run: |
-          mkdir -p ~/.buildozer/android/platform/python-for-android
-          buildozer init
-          sed -i "s|# android.ndk_path = .*|android.ndk_path = $HOME/.buildozer/android/platform/android-ndk-r25b|" buildozer.spec
-          sed -i "s|# android.sdk_path = .*|android.sdk_path = /usr/lib/android-sdk|" buildozer.spec
-          sed -i "s|# p4a.branch = .*|p4a.branch = master|" buildozer.spec
+          if [ ! -f buildozer.spec ]; then
+            buildozer init
+          fi
+          
+          sed -i "s|^android.ndk_path = .*|android.ndk_path = $HOME/.buildozer/android/platform/android-ndk-r25b|" buildozer.spec
+          sed -i "s|^android.sdk_path = .*|android.sdk_path = /usr/lib/android-sdk|" buildozer.spec
+          sed -i "s|^p4a.branch = .*|p4a.branch = master|" buildozer.spec
+          
+          grep -q "\[android\]" buildozer.spec || echo -e "\n[android]" >> buildozer.spec
+          grep -q "archs = " buildozer.spec || echo "archs = armeabi-v7a" >> buildozer.spec
+          grep -q "minapi = " buildozer.spec || echo "minapi = 21" >> buildozer.spec
+          grep -q "targetapi = " buildozer.spec || echo "targetapi = 33" >> buildozer.spec
+          
+          cat buildozer.spec
 
       - name: Build APK
         run: |
