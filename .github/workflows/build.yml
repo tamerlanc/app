@@ -9,12 +9,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Set up Python 3.8
         uses: actions/setup-python@v5
         with:
           python-version: "3.8"
 
-      - name: Install dependencies
+      - name: Install system dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y \
@@ -24,20 +24,33 @@ jobs:
               android-sdk-build-tools \
               android-sdk-platform-tools-common
           
-          pip install --upgrade pip setuptools wheel
-          pip install buildozer cython==0.29.19 kivy==2.3.0
+          # Установка Android NDK
+          mkdir -p ~/.buildozer/android/platform
+          wget https://dl.google.com/android/repository/android-ndk-r23b-linux.zip
+          unzip android-ndk-r23b-linux.zip -d ~/.buildozer/android/platform
+          mv ~/.buildozer/android/platform/android-ndk-r23b ~/.buildozer/android/platform/android-ndk-r23b
+          rm android-ndk-r23b-linux.zip
 
-      - name: Setup Android paths
+      - name: Install Python dependencies
         run: |
-          echo "ANDROID_SDK_ROOT=/usr/lib/android-sdk" >> $GITHUB_ENV
-          echo "PATH=$PATH:/usr/lib/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_ENV
+          python -m pip install --upgrade pip setuptools wheel
+          pip install buildozer cython==0.29.19 kivy==2.3.0
+          pip install python-for-android
+
+      - name: Initialize Buildozer
+        run: |
+          buildozer init
+          sed -i "s|# android.ndk_path = .*|android.ndk_path = $HOME/.buildozer/android/platform/android-ndk-r23b|" buildozer.spec
+          sed -i "s|# android.sdk_path = .*|android.sdk_path = /usr/lib/android-sdk|" buildozer.spec
 
       - name: Build APK
         run: |
+          export BUILD_MEMORY=2048
           buildozer -v android clean
           buildozer -v android debug
 
       - name: Upload APK
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: app
