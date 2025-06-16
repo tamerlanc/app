@@ -14,7 +14,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Python 3.10
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.10"
 
@@ -27,7 +27,7 @@ jobs:
               libffi-dev libssl-dev zlib1g-dev \
               build-essential autoconf libtool pkg-config \
               zlib1g-dev libncurses5-dev libncursesw5-dev \
-              libtinfo5 cmake libffi-dev libssl-dev
+              libtinfo5 cmake
 
       - name: Install Buildozer and dependencies
         run: |
@@ -36,7 +36,7 @@ jobs:
 
       - name: Initialize Buildozer
         run: |
-          buildozer init  # Создаст spec файл если его нет
+          # Создаем минимальный buildozer.spec
           echo "[app]" > buildozer.spec
           echo "title = FinanceApp" >> buildozer.spec
           echo "package.name = financeapp" >> buildozer.spec
@@ -47,7 +47,6 @@ jobs:
           echo "" >> buildozer.spec
           echo "[android]" >> buildozer.spec
           echo "arch = armeabi-v7a" >> buildozer.spec
-          echo "p4a.branch = master" >> buildozer.spec
 
       - name: Build APK
         run: |
@@ -55,7 +54,8 @@ jobs:
           buildozer -v android debug
 
       - name: Upload APK
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: app
+          name: financeapp
           path: bin/*.apk
+          retention-days: 1
