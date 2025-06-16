@@ -7,3 +7,4 @@ class FinanceApp(App):
 
 if __name__ == "__main__":
     FinanceApp().run()
+
