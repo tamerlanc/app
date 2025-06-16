@@ -37,10 +37,15 @@ jobs:
           python -m pip install --upgrade pip setuptools wheel
           pip install buildozer cython==0.29.19 kivy==2.3.0
 
-      - name: Initialize Buildozer
+      - name: Configure Buildozer
         run: |
-          buildozer init
-          echo -e "\n[android]\nndk_path = $HOME/.buildozer/android/platform/android-ndk-r23b\nsdk_path = /usr/lib/android-sdk" >> buildozer.spec
+          # Обновляем buildozer.spec вместо создания нового
+          if [ ! -f buildozer.spec ]; then
+            buildozer init
+          fi
+          sed -i "s|# android.ndk_path = .*|android.ndk_path = $HOME/.buildozer/android/platform/android-ndk-r23b|" buildozer.spec
+          sed -i "s|# android.sdk_path = .*|android.sdk_path = /usr/lib/android-sdk|" buildozer.spec
+          cat buildozer.spec
 
       - name: Build APK
         run: |
